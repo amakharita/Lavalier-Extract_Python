@@ -68,11 +68,13 @@ def getPolicyTransactions():
     browser.find_element_by_xpath("//select[@name='form1:j_idt35']/option[text()='Policy Transactions']").click()
     # Calendar fields
     startdate = browser.find_element_by_id('form1:dateField3_input')
-    ActionChains(browser).move_to_element(startdate).click().send_keys(prev_month_start(datetime.datetime.now())).perform()
+    ActionChains(browser).move_to_element(startdate).click().\
+        send_keys(prev_month_start(datetime.datetime.now())).perform()
     # search_btn = browser.find_element_by_id('ctl00_cphMain_btnSearchAll')
     enddate = browser.find_element_by_id('form1:dateField4_input')
     ActionChains(browser).move_to_element(enddate).click().click().perform()
-    ActionChains(browser).move_to_element(enddate).click().send_keys(prev_month_end(datetime.datetime.now())).perform()
+    ActionChains(browser).move_to_element(enddate).click().\
+        send_keys(prev_month_end(datetime.datetime.now())).perform()
     browser.find_element_by_class_name('commandLink').click()
     # Wait 30 seconds for the BtnGenerateReport to return, by then the file will have downloaded.
     max_wait_in_seconds = 30
@@ -85,11 +87,13 @@ def getBordereauItem():
     # Calendar fields
     browser.find_element_by_id('form1:dateField3_input').clear()
     startdate = browser.find_element_by_id('form1:dateField3_input')
-    ActionChains(browser).move_to_element(startdate).click().send_keys(prev_month_start(datetime.datetime.now())).perform()
+    ActionChains(browser).move_to_element(startdate).click().\
+        send_keys(prev_month_start(datetime.datetime.now())).perform()
     browser.find_element_by_id('form1:dateField4_input').clear()
     enddate = browser.find_element_by_id('form1:dateField4_input')
     ActionChains(browser).move_to_element(enddate).click().click().perform()
-    ActionChains(browser).move_to_element(enddate).click().send_keys(prev_month_end(datetime.datetime.now())).perform()
+    ActionChains(browser).move_to_element(enddate).click().\
+        send_keys(prev_month_end(datetime.datetime.now())).perform()
     browser.find_element_by_class_name('commandLink').click()
     # Wait 30 seconds for the BtnGenerateReport to return, by then the file will have downloaded.
     max_wait_in_seconds = 30
@@ -102,13 +106,11 @@ def moveFiles():
      # Moves files to folders that the rest of the ETL process will use as a source
     for f in os.listdir(init_dir):
         if f == 'policytransactions.xls':
-            shutil.move('S:/Lavalier_Report_Downloads/policytransactions.xls',
-                    'S:/Lavalier_Report_Downloads/Policy_Transactions/policytransactions.xls')
+            source_file = 'S:/Lavalier_Report_Downloads/policytransactions.xls'
+            dest_file = 'S:/Lavalier_Report_Downloads/Policy_Transactions/policytransactions.xls'
         elif f == 'LavalierBordereauxPolicy.xls':
-            shutil.move('S:/Lavalier_Report_Downloads/LavalierBordereauxPolicy.xls',
-                    'S:/Lavalier_Report_Downloads/Bordereau_Policy/LavalierBordereauxPolicy.xls')
-        #else:
-            #send error email function here
+            source_file = 'S:/Lavalier_Report_Downloads/LavalierBordereauxPolicy.xls'
+            dest_file = 'S:/Lavalier_Report_Downloads/Bordereau_Policy/LavalierBordereauxPolicy.xls'
 
 # Rename files to something identifiable
 def renameFiles():
@@ -121,21 +123,23 @@ def renameFiles():
     rename_bord_to = 'BORD' + '-' + start.replace('/', '') + '-' + end.replace('/', '') + '.xls'
     for f in os.listdir(pt_dir):
         if f == 'policytransactions.xls':
-            os.rename(os.path.join(pt_dir, f), os.path.join(pt_dir, rename_pt_to))
+            try:
+                os.rename(os.path.join(pt_dir, f), os.path.join(pt_dir, rename_pt_to))
+            except WindowsError:
+                print 'File {} already exists in destination file'.format(rename_pt_to)
     for f in os.listdir(bord_dir):
         if f == 'LavalierBordereauxPolicy.xls':
-            os.rename(os.path.join(bord_dir, f), os.path.join(bord_dir, rename_bord_to))
-
-
+            try:
+                os.rename(os.path.join(bord_dir, f), os.path.join(bord_dir, rename_bord_to))
+            except WindowsError:
+                print 'File {} already exists in destination file'.format(rename_bord_to)
 
 lavalierLogin()
 getPolicyTransactions()
 getBordereauItem()
+time.sleep(5)
 moveFiles()
 renameFiles()
 
 for filename in glob.glob(os.path.join(download_dir, '*.xls*')):
     print(filename)
-
-
-
