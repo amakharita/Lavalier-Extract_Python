@@ -28,7 +28,7 @@ browser = webdriver.Chrome('C:/chromedriver.exe', chrome_options=chromeoptions)
 
 # LOGIN - selects login form, populates user and pass fields, and submits form
 def lavalierLogin():
-    browser.get('https://lavalier.dragonflyware.com/login/login')
+    browser.get('https://XXX.com/login/login')
     browser.find_element_by_class_name('form-signin')
     element = browser.find_element_by_name('username')
     element.send_keys(str(username))
@@ -64,7 +64,7 @@ def prev_month_end(when):
 
 # Gets Policy Transaction XLS file
 def getPolicyTransactions():
-    browser.get('https://lavalier.dragonflyware.com/policy/app/reports?execution=e3s1')
+    browser.get('https://XXX.com/policy/app/reports?execution=e3s1')
     browser.find_element_by_xpath("//select[@name='form1:j_idt35']/option[text()='Policy Transactions']").click()
     # Calendar fields
     startdate = browser.find_element_by_id('form1:dateField3_input')
@@ -80,7 +80,7 @@ def getPolicyTransactions():
 
 # Gets Bordereau Item XLS file
 def getBordereauItem():
-    browser.get('https://lavalier.dragonflyware.com/policy/app/reports?execution=e3s1')
+    browser.get('https://XXX.com/policy/app/reports?execution=e3s1')
     browser.find_element_by_xpath("//select[@name='form1:j_idt35']/option[text()='Bordereau Policy']").click()
     # Calendar fields
     browser.find_element_by_id('form1:dateField3_input').clear()
